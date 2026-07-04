@@ -1,0 +1,7 @@
+python
+langchain
+flask
+html 
+css 
+js
+langchain-openrouter
