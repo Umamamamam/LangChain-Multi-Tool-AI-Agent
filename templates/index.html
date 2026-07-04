@@ -10,7 +10,7 @@
 body{
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+font-family: "Times New Roman";
 }
 .hero {
     width: 100%;
@@ -24,11 +24,23 @@ body{
 .main .main-heading {
     font-size: 28px;
 }
+
 .container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;  
     align-items: center;
+    width: 100%;
 }
+
+.output-box {
+    width: 850px;
+    max-height: 500px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
 .input-box{
     display: inline;
 }
@@ -63,6 +75,18 @@ body{
     font-size: 13px
 }
 
+.user-input{
+    color: black; 
+    align-self: flex-end;
+    background-color: #eee;
+    width: fit-content;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 18px;
+}
+.user-output{
+    font-size: 18px;
+}
 </style>
 <body>
     <div class = "hero">
@@ -91,18 +115,26 @@ body{
     const mainHeading = document.querySelector(".main-heading");
     let msgCount = 0; 
     sendBtn.addEventListener("click", async () => {
-        mainHeading.remove();
+        if (mainHeading) mainHeading.remove();
         const query = input.value.trim();
         input.value = "";
         input.focus();
-        sendBtn.textContent = "Wait"
-        container.style.position = "absolute";
-        container.style.bottom = "80px";
-        p = document.createElement("p");
-        outputBox.style.position = "absolute";
-        outputBox.style.bottom = "100px";
-        p.innerText = "Loading..."
+        sendBtn.textContent = "Wait";
+
+        if (msgCount > 0) {
+            const hr = document.createElement("hr");
+            outputBox.appendChild(hr);
+        }
+
+        const p = document.createElement("p");
+        const userInput = document.createElement("p");
+        userInput.innerText = query;
+        p.innerText = "Loading...";
+        userInput.classList.add("user-input");
+        p.classList.add("user-output");
+        outputBox.append(userInput);
         outputBox.appendChild(p);
+  
         async function getData () {
             const res = await fetch("/chat", {
                 method: "POST",
@@ -117,14 +149,10 @@ body{
         }
         const data = await getData();
 
-        if (msgCount > 0) {
-        const hr = document.createElement("hr");
-        outputBox.appendChild(hr);
-        }
-
         p.innerHTML = marked.parse(data.text);
+
         sendBtn.textContent = "Send";
-        msgCount = 1
+        msgCount = 1;
     });
 </script>
 </html>
